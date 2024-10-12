@@ -170,29 +170,29 @@ class DBManager(AbstracDBManager):
 
     def load_vac_from_json(self, json_data):
         """
-        Загружает данные о компаниях из JSON-файла и вставляет их в таблицу companies.
+        Загружает данные о компаниях из JSON-файла и вставляет их в таблицу vacancies.
 
         Параметры:
         ----------
         file_path : str
-            Путь до файла с данными компаний.
+            Путь до файла с данными вакансий.
         """
 
         for vac in json_data.get("items"):
-            title = vac["name"]
-            salary_min = vac["salary_min"]
-            salary_max = (vac["salary_max"],)
-            url = (vac["url"],)
-            description = (vac["description"],)
+            title = vac["name"],
+            salary_min = vac["salary_min"],
+            salary_max = vac["salary_max"],
+            url = vac["url"],
+            description = vac["description"],
             published_at = vac["published_at"]
             self.insert_vac(title, salary_min, salary_max, url, description, published_at)
 
-    def insert_vac(self, name, employer_id):
+    def insert_vac(self, title, salary_min, salary_max, url, description, published_at):
         """
-        Вставляет новую компанию в таблицу companies.
+        Вставляет новую компанию в таблицу vacancies.
         """
         with self.connection.cursor() as cursor:
             cursor.execute(
-                "INSERT INTO companies (name, employer_id) VALUES (%s, %s) ON CONFLICT (employer_id) DO NOTHING;",
-                (name, employer_id),
+                "INSERT INTO vacancies (title, salary_min, salary_max, url, description, published_at) VALUES (%s, %s, %s, %s, %s, %s);",
+                (title, salary_min, salary_max, url, description, published_at),
             )
